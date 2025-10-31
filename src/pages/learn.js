@@ -2,8 +2,9 @@
 import React, { useState } from "react";
 import { Globe2, ShieldCheck, Lock, KeyRound, Zap } from "lucide-react";
 import { ResourceDrawer } from "../shared";
+import { NotesBox } from "../shared"; // <-- import the NotesBox from above (or same file)
 
-function LearnCard({ icon: Icon, title, desc, children, onOpen }) {
+function LearnCard({ icon: Icon, title, desc, children, onOpen, notesKey }) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
       <div className="flex items-center justify-between gap-3">
@@ -11,9 +12,7 @@ function LearnCard({ icon: Icon, title, desc, children, onOpen }) {
           <div className="rounded-xl bg-slate-100 p-3 dark:bg-slate-800">
             <Icon className="h-6 w-6 text-slate-700 dark:text-slate-200" />
           </div>
-          <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">
-            {title}
-          </h3>
+          <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{title}</h3>
         </div>
         <button
           onClick={onOpen}
@@ -22,8 +21,12 @@ function LearnCard({ icon: Icon, title, desc, children, onOpen }) {
           Open resources
         </button>
       </div>
+
       <p className="mt-2 text-slate-600 dark:text-slate-300">{desc}</p>
       <div className="mt-3 text-slate-700 dark:text-slate-200">{children}</div>
+
+      {/* ✏️ Notes box */}
+      <NotesBox noteKey={notesKey} label="Notes for this topic" />
     </div>
   );
 }
@@ -37,6 +40,7 @@ export default function Learn({ t }) {
           icon={Lock}
           title={t.l1}
           desc={t.l1p}
+          notesKey="notes:classical"
           onOpen={() => setOpenTopic({ id: "classical", title: t.l1 })}
         >
           <ul className="ml-4 list-disc text-sm">
@@ -49,6 +53,7 @@ export default function Learn({ t }) {
           icon={KeyRound}
           title={t.l2}
           desc={t.l2p}
+          notesKey="notes:rsa"
           onOpen={() => setOpenTopic({ id: "rsa", title: t.l2 })}
         >
           <ul className="ml-4 list-disc text-sm">
@@ -61,6 +66,7 @@ export default function Learn({ t }) {
           icon={Zap}
           title={t.l3}
           desc={t.l3p}
+          notesKey="notes:quantum"
           onOpen={() => setOpenTopic({ id: "quantum", title: t.l3 })}
         >
           <ul className="ml-4 list-disc text-sm">
@@ -73,6 +79,7 @@ export default function Learn({ t }) {
           icon={ShieldCheck}
           title={t.l4}
           desc={t.l4p}
+          notesKey="notes:lattice-kyber"
           onOpen={() => setOpenTopic({ id: "lattice-kyber", title: t.l4 })}
         >
           <ul className="ml-4 list-disc text-sm">
@@ -85,6 +92,7 @@ export default function Learn({ t }) {
           icon={Globe2}
           title={t.l5}
           desc={t.l5p}
+          notesKey="notes:ethics"
           onOpen={() => setOpenTopic({ id: "ethics", title: t.l5 })}
         >
           <ul className="ml-4 list-disc text-sm">

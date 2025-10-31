@@ -16,6 +16,7 @@ export const i18n = {
     start: "Get Started",
     standards: "Aligned to MA DLCS + HS math standards",
     language: "Language",
+
     l1: "Classical Cryptography",
     l1p:
       "Substitution & Vigenère ciphers, frequency analysis, modular arithmetic warm-up.",
@@ -27,11 +28,13 @@ export const i18n = {
     l4p: "Lattices, short vectors intuition, and Kyber’s key encapsulation.",
     l5: "Ethics & Society",
     l5p: "Privacy, surveillance, equity, and digital citizenship.",
+
     caesar: "Caesar",
     vigenere: "Vigenère",
     rsa: "Toy RSA",
     lattice: "Lattice Sandbox",
     kyber: "Kyber KEM (Storyboard)",
+
     plaintext: "Plaintext",
     ciphertext: "Ciphertext",
     key: "Key",
@@ -47,14 +50,77 @@ export const i18n = {
     privateD: "Private d",
     generate: "Generate",
     reset: "Reset",
+
     quizTitle: "Quick Checks",
     submit: "Submit",
     result: "Result",
+
     reflection: "Reflection Journal",
     projectBrief: "Culminating Project",
     rubric: "Rubric",
     teacherGuide: "Teacher Guide & Standards",
   },
+
+  fr: {
+    appTitle: "PQC en Mathématiques & Informatique (MA) 10–11",
+    learn: "Apprendre",
+    simulate: "Simuler",
+    assess: "Évaluer",
+    project: "Projet",
+    resources: "Ressources",
+    heroBlurb:
+      "Découvrez comment les maths et l’informatique protègent notre monde numérique — des chiffres de César à CRYSTALS-Kyber.",
+    start: "Commencer",
+    standards: "Aligné sur MA DLCS + normes de mathématiques du lycée",
+    language: "Langue",
+
+    l1: "Cryptographie classique",
+    l1p:
+      "Chiffres de substitution et de Vigenère, analyse de fréquence, arithmétique modulaire.",
+    l2: "Clé publique moderne (RSA)",
+    l2p:
+      "Clés, exponentiation modulaire, difficulté de factorisation, démo RSA simplifiée.",
+    l3: "Menace quantique",
+    l3p:
+      "Qubits, algorithme de Shor et risque « collecter maintenant, déchiffrer plus tard ».",
+    l4: "Réseaux (lattices) & Kyber",
+    l4p:
+      "Réseaux, intuition des vecteurs courts, et encapsulation de clé Kyber.",
+    l5: "Éthique & société",
+    l5p: "Vie privée, surveillance, équité et citoyenneté numérique.",
+
+    caesar: "Chiffre de César",
+    vigenere: "Vigenère",
+    rsa: "RSA (démo)",
+    lattice: "Bac à sable Réseaux",
+    kyber: "Kyber KEM (Storyboard)",
+
+    plaintext: "Texte en clair",
+    ciphertext: "Texte chiffré",
+    key: "Clé",
+    shift: "Décalage",
+    encrypt: "Chiffrer",
+    decrypt: "Déchiffrer",
+    smallIntsOnly: "(Petits entiers ; démo uniquement)",
+    messageAsInt: "Message (petit entier)",
+    primeP: "Premier p",
+    primeQ: "Premier q",
+    publicE: "Exposant e (public)",
+    modulusN: "Module n",
+    privateD: "Exposant d (privé)",
+    generate: "Générer",
+    reset: "Réinitialiser",
+
+    quizTitle: "Vérifications rapides",
+    submit: "Envoyer",
+    result: "Résultat",
+
+    reflection: "Journal de réflexion",
+    projectBrief: "Projet culminant",
+    rubric: "Grille d’évaluation",
+    teacherGuide: "Guide enseignant & normes",
+  },
+
   es: {
     appTitle: "Criptografía PQC en Grados 10–11 (Massachusetts)",
     learn: "Aprender",
@@ -66,6 +132,7 @@ export const i18n = {
       "Explora cómo las matemáticas y la computación protegen el mundo digital — de César a CRYSTALS-Kyber.",
     start: "Comenzar",
     standards: "Alineado con MA DLCS + estándares de matemáticas",
+
     language: "Idioma",
     l1: "Criptografía clásica",
     l1p:
@@ -81,11 +148,13 @@ export const i18n = {
       "Intuición de vectores cortos y encapsulación de claves de Kyber.",
     l5: "Ética y sociedad",
     l5p: "Privacidad, vigilancia, equidad y ciudadanía digital.",
+
     caesar: "César",
     vigenere: "Vigenère",
     rsa: "RSA (juguete)",
     lattice: "Lattice",
     kyber: "Kyber KEM (Storyboard)",
+
     plaintext: "Texto claro",
     ciphertext: "Texto cifrado",
     key: "Clave",
@@ -101,6 +170,7 @@ export const i18n = {
     privateD: "Privado d",
     generate: "Generar",
     reset: "Reiniciar",
+
     quizTitle: "Comprensiones rápidas",
     submit: "Enviar",
     result: "Resultado",
@@ -111,14 +181,153 @@ export const i18n = {
   },
 };
 
-/* ---------- Theme toggle ---------- */
+
+export function getStrings(lang = "en") {
+  const base = i18n.en;
+  const chosen = i18n[lang] || i18n.en;
+  return { ...base, ...chosen };
+}
+
+
+export function topicToNotesKey(topicId) {
+  switch (topicId) {
+    case "classical": return "notes:classical";       // Caesar/Vigenère
+    case "rsa":       return "notes:rsa";
+    case "quantum":   return "notes:quantum";
+    case "lattice-kyber": return "notes:lattice-kyber";
+    case "ethics":    return "notes:ethics";
+    default:          return `notes:${topicId || "general"}`;
+  }
+}
+
+function emitNotesUpdated(noteKey) {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new CustomEvent("notes:updated", { detail: { noteKey } }));
+}
+
+export function usePersistentNote(noteKey, initial = "") {
+  const [text, setText] = useState("");
+
+  // Load on mount or key change
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const saved = localStorage.getItem(noteKey);
+    setText(saved ?? initial);
+  }, [noteKey, initial]);
+
+  // Listen for cross-tab updates and same-tab custom events
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const onStorage = (e) => {
+      if (e.key === noteKey) {
+        setText(e.newValue ?? "");
+      }
+    };
+    const onUpdated = (e) => {
+      if (e.detail?.noteKey === noteKey) {
+        const saved = localStorage.getItem(noteKey);
+        setText(saved ?? "");
+      }
+    };
+
+    window.addEventListener("storage", onStorage);
+    window.addEventListener("notes:updated", onUpdated);
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("notes:updated", onUpdated);
+    };
+  }, [noteKey]);
+
+  // Explicit Post saves and emits update event
+  const post = () => {
+    if (typeof window === "undefined") return;
+    localStorage.setItem(noteKey, text || "");
+    emitNotesUpdated(noteKey);
+  };
+
+  const clear = () => {
+    setText("");
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(noteKey);
+      emitNotesUpdated(noteKey);
+    }
+  };
+
+  return { text, setText, post, clear };
+}
+
+/* ---------- Editor on Learn (explicit Post) ---------- */
+export function NotesBox({ noteKey, label = "Notes" }) {
+  const { text, setText, post, clear } = usePersistentNote(noteKey);
+  const [status, setStatus] = useState("");
+
+  const onPost = () => {
+    post();
+    setStatus("Posted ✓");
+    setTimeout(() => setStatus(""), 1200);
+  };
+
+  return (
+    <div className="mt-4 rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+      <div className="mb-2 flex items-center justify-between">
+        <div className="text-sm font-semibold text-slate-800 dark:text-slate-100">{label}</div>
+        <div className="flex items-center gap-2">
+          {status && <span className="text-xs text-green-700">{status}</span>}
+          <button
+            type="button"
+            onClick={onPost}
+            className="rounded-md border px-2 py-1 text-xs hover:bg-slate-50 dark:hover:bg-slate-800"
+            title="Post notes"
+          >
+            Post
+          </button>
+          <button
+            type="button"
+            onClick={clear}
+            className="rounded-md border px-2 py-1 text-xs hover:bg-slate-50 dark:hover:bg-slate-800"
+            title="Clear notes"
+          >
+            Clear
+          </button>
+        </div>
+      </div>
+      <textarea
+        rows={5}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder="Jot down key ideas, formulas, gotchas…"
+        className="w-full rounded-lg border bg-white p-2 text-sm outline-none focus:ring-2 focus:ring-blue-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+      />
+      <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+        Write freely, then click <b>Post</b> to sync across pages (this device).
+      </p>
+    </div>
+  );
+}
+
+/* ---------- Viewer (Simulate & Resources) ---------- */
+export function NotesViewer({ noteKey, title = "Your notes" }) {
+  const { text } = usePersistentNote(noteKey);
+  const hasNotes = (text ?? "").trim().length > 0;
+
+  return (
+    <details className="mt-3 rounded-xl border p-3 open:bg-white/60 dark:border-slate-700 dark:open:bg-slate-800/40">
+      <summary className="cursor-pointer text-sm font-semibold">
+        {title} {hasNotes ? "" : "(empty)"}
+      </summary>
+      <div className="mt-2 whitespace-pre-wrap text-sm text-slate-700 dark:text-slate-200">
+        {hasNotes ? text : "No notes yet. Add notes in Learn and click Post; they’ll appear here."}
+      </div>
+    </details>
+  );
+}
+
 function useDarkMode() {
   const [dark, setDark] = useState(() => {
     const stored = localStorage.getItem("theme");
     if (stored) return stored === "dark";
-    return (
-      window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false
-    );
+    return window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
   });
   useEffect(() => {
     const root = document.documentElement;
@@ -147,7 +356,6 @@ export function DarkToggle() {
   );
 }
 
-/* ---------- Small UI atoms ---------- */
 export function Chip({ icon: Icon, children }) {
   return (
     <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700 dark:bg-slate-800 dark:text-slate-200">
@@ -174,7 +382,7 @@ export function Section({ title, badge, children, right }) {
   );
 }
 
-/* ---------- Resource Drawer ---------- */
+
 export function ResourceDrawer({ open, onClose, topic }) {
   if (!open) return null;
   const items = [
@@ -189,6 +397,9 @@ export function ResourceDrawer({ open, onClose, topic }) {
       desc: "Student/Teacher access (coming later).",
     },
   ];
+
+  const notesKey = topicToNotesKey(topic?.id);
+
   return (
     <>
       <div
@@ -218,6 +429,7 @@ export function ResourceDrawer({ open, onClose, topic }) {
             Close
           </button>
         </header>
+
         <div className="flex h-[calc(100%-57px)]">
           <nav className="w-40 border-r p-3 text-sm dark:border-slate-800">
             <ul className="space-y-1">
@@ -237,7 +449,8 @@ export function ResourceDrawer({ open, onClose, topic }) {
               ))}
             </ul>
           </nav>
-          <section className="flex-1 p-4">
+
+          <section className="flex-1 space-y-4 p-4">
             <div className="rounded-xl border border-dashed p-4 text-sm text-slate-600 dark:border-slate-700 dark:text-slate-300">
               <p className="font-medium">Upload area</p>
               <p className="mt-1">
@@ -250,6 +463,12 @@ export function ResourceDrawer({ open, onClose, topic }) {
                 <li>Gate “Whiteboard” for teacher/student roles later.</li>
               </ul>
             </div>
+
+            {/* 🗒️ Learner’s notes for this topic, live-synced */}
+            <NotesViewer
+              noteKey={notesKey}
+              title={`Your notes — ${topic?.title || "This topic"}`}
+            />
           </section>
         </div>
       </aside>
@@ -257,7 +476,6 @@ export function ResourceDrawer({ open, onClose, topic }) {
   );
 }
 
-/* ---------- Crypto helpers ---------- */
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const lettersOnly = (s) => s.toUpperCase().replace(/[^A-Z]/g, "");
 
@@ -355,12 +573,13 @@ export function rsaDecrypt(c, d, n) {
   return Number(modExp(BigInt(c), BigInt(d), BigInt(n)));
 }
 
-/* ---------- Lattice drawing helper ---------- */
+
 export function drawLattice(ctx, width, height, basis) {
   ctx.clearRect(0, 0, width, height);
   ctx.lineWidth = 1;
   ctx.globalAlpha = 1;
 
+  // background grid
   ctx.strokeStyle = "#e5e7eb";
   for (let x = 0; x <= width; x += 20) {
     ctx.beginPath();
@@ -375,6 +594,7 @@ export function drawLattice(ctx, width, height, basis) {
     ctx.stroke();
   }
 
+  // axes
   ctx.strokeStyle = "#9ca3af";
   ctx.beginPath();
   ctx.moveTo(width / 2, 0);
@@ -388,6 +608,7 @@ export function drawLattice(ctx, width, height, basis) {
   const origin = { x: width / 2, y: height / 2 };
   const toCanvas = (v) => ({ x: origin.x + v[0] * 20, y: origin.y - v[1] * 20 });
 
+  // lattice points
   ctx.fillStyle = "#1f2937";
   for (let i = -10; i <= 10; i++) {
     for (let j = -10; j <= 10; j++) {
@@ -402,6 +623,7 @@ export function drawLattice(ctx, width, height, basis) {
     }
   }
 
+  // basis vectors
   const b1 = toCanvas(basis[0]);
   const b2 = toCanvas(basis[1]);
   ctx.strokeStyle = "#2563eb";
