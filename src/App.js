@@ -19,24 +19,15 @@ import Access from "./pages/access";
 import Project from "./pages/project";
 import Resources from "./pages/resources";
 
-/* -------- Role Gate -------- */
+/* -------- Role Gate (no password) -------- */
 function RoleGate({ onPass }) {
   const [role, setRole] = useState("student");
-  const [code, setCode] = useState("");
-  const [error, setError] = useState("");
 
   const handleEnter = () => {
-    const ok =
-      (role === "student" && code === "student25") ||
-      (role === "teacher" && code === "teacher25");
-
-    if (ok) {
-      localStorage.setItem("pqc_role", role);
-      localStorage.setItem("pqc_authed", "1");
-      onPass(role);
-    } else {
-      setError("Invalid code for selected role.");
-    }
+    // No code check anymore – just persist the chosen role and auth flag
+    localStorage.setItem("pqc_role", role);
+    localStorage.setItem("pqc_authed", "1");
+    onPass(role);
   };
 
   return (
@@ -45,7 +36,7 @@ function RoleGate({ onPass }) {
         Welcome
       </h2>
       <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
-        Choose your role and enter your personal code to proceed.
+        Choose your role to continue into the PQC learning space.
       </p>
 
       <label className="mt-4 block text-sm font-medium text-slate-700 dark:text-slate-200">
@@ -60,29 +51,15 @@ function RoleGate({ onPass }) {
         <option value="teacher">Teacher</option>
       </select>
 
-      <label className="mt-4 block text-sm font-medium text-slate-700 dark:text-slate-200">
-        Personal code
-      </label>
-      <input
-        type="password"
-        className="mt-1 w-full rounded-lg border border-slate-200 p-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
-        value={code}
-        onChange={(e) => setCode(e.target.value)}
-        placeholder={role === "student" ? "student25" : "teacher25"}
-      />
-
-      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
-
       <button
         onClick={handleEnter}
-        className="mt-4 w-full rounded-xl bg-blue-600 px-4 py-2 text-white shadow hover:bg-blue-700"
+        className="mt-6 w-full rounded-xl bg-blue-600 px-4 py-2 text-white shadow hover:bg-blue-700"
       >
-        Enter
+        Enter as {role === "teacher" ? "Teacher" : "Student"}
       </button>
 
       <p className="mt-4 text-xs text-slate-500">
-        Student code: <code>student25</code> · Teacher code:{" "}
-        <code>teacher25</code>
+        You can switch roles later by logging out and choosing a different role.
       </p>
     </div>
   );
