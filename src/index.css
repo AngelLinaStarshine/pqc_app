@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Base styles so content is always visible */
+html {
+  min-height: 100%;
+}
+body {
+  min-height: 100%;
+  margin: 0;
+  background-color: #f8fafc;
+}
+#root {
+  min-height: 100%;
+}

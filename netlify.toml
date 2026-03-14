@@ -1,0 +1,4 @@
+# Netlify build config for PQC App
+[build]
+  publish = "build"
+  command = "npm run build"

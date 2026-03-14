@@ -132,7 +132,7 @@ export default function App() {
           </div>
         </header>
 
-        <main className="mx-auto max-w-6xl px-4 py-6">
+        <main id="main-content" className="mx-auto max-w-6xl px-4 py-6" tabIndex={-1}>
           <RoleGate onPass={setAuthedRole} />
         </main>
       </div>
@@ -200,7 +200,7 @@ export default function App() {
       </header>
 
       {/* Main */}
-      <main className="mx-auto max-w-6xl px-4 py-6">
+      <main id="main-content" className="mx-auto max-w-6xl px-4 py-6" tabIndex={-1}>
         {/* Hero */}
         <section
           aria-label="Intro"
