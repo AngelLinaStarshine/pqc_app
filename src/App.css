@@ -14,6 +14,15 @@
 .anim-fade { animation: fade-in-up .45s ease-out both; }
 .anim-pop  { animation: pop-in .25s ease-out both; }
 
+/* ADHD/Vestibular: Disable motion when reduced-motion is on */
+html.udl-reduced-motion .shimmer::before {
+  animation: none;
+}
+html.udl-reduced-motion .anim-fade,
+html.udl-reduced-motion .anim-pop {
+  animation: none;
+}
+
 /* shimmer highlight for hero */
 .shimmer {
   position: relative;
@@ -28,4 +37,26 @@
   animation: shimmer 2.2s ease-in-out infinite;
   pointer-events: none;
   mix-blend-mode: overlay;
+}
+
+/* ADHD / vestibular: respect reduced motion */
+.udl-reduced-motion .shimmer::before,
+.udl-reduced-motion [class*="anim-"] {
+  animation: none !important;
+}
+
+/* UDL: Reduced motion for ADHD/vestibular sensitivity */
+html.udl-reduced-motion .shimmer::before,
+html.udl-reduced-motion .anim-fade,
+html.udl-reduced-motion .anim-pop {
+  animation: none !important;
+}
+
+/* ADHD / vestibular: reduce motion when requested */
+.udl-reduced-motion .shimmer::before {
+  animation: none;
+}
+.udl-reduced-motion .anim-fade,
+.udl-reduced-motion .anim-pop {
+  animation: none;
 }

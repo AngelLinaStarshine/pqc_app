@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { UDLProvider } from './contexts/UDLContext';
 
 /* Error boundary: prevents blank screen if React throws */
 class ErrorBoundary extends React.Component {
@@ -35,9 +36,11 @@ class ErrorBoundary extends React.Component {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <ErrorBoundary>
-      <App />
-    </ErrorBoundary>
+    <UDLProvider>
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
+    </UDLProvider>
   </React.StrictMode>
 );
 

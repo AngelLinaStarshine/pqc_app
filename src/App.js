@@ -10,9 +10,12 @@ import {
   BookOpen,
   Languages,
   Info,
+  Settings,
 } from "lucide-react";
 
-import { DarkToggle, Chip, i18n } from "./shared"; // ensure shared.js exports i18n, DarkToggle, Chip
+import { DarkToggle, Chip, i18n } from "./shared";
+import { SkipToContent, AccessibilitySettingsPanel, BreakPromptModal } from "./components/udl";
+import { useUDL } from "./contexts/UDLContext";
 import Learn from "./pages/learn";
 import Simulate from "./pages/simulate";
 import Access from "./pages/access";
@@ -81,8 +84,30 @@ export default function App() {
       : null;
   });
 
+  /* Accessibility Settings panel */
+  const [a11yOpen, setA11yOpen] = useState(false);
+
   /* Tabs */
   const [tab, setTab] = useState("learn");
+
+  /* ADHD: Break prompts on Learn tab */
+  const { focusMode, breakPrompts, breakIntervalMinutes } = useUDL();
+  const [showBreakPrompt, setShowBreakPrompt] = useState(false);
+  const [breakDismissedAt, setBreakDismissedAt] = useState(0);
+  useEffect(() => {
+    if (tab !== "learn" || !breakPrompts) {
+      setShowBreakPrompt(false);
+      return;
+    }
+    const ms = breakIntervalMinutes * 60 * 1000;
+    const id = setTimeout(() => setShowBreakPrompt(true), ms);
+    return () => clearTimeout(id);
+  }, [tab, breakPrompts, breakIntervalMinutes, breakDismissedAt]);
+
+  const handleBreakDismiss = () => {
+    setShowBreakPrompt(false);
+    setBreakDismissedAt(Date.now());
+  };
   const tabs = useMemo(
     () => [
       { id: "learn", label: t.learn, icon: BookOpen },
@@ -142,6 +167,8 @@ export default function App() {
   /* Authed UI */
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+      <SkipToContent targetId="main-content" label="Skip to main content" />
+      <AccessibilitySettingsPanel open={a11yOpen} onClose={() => setA11yOpen(false)} />
       {/* Header */}
       <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur dark:border-slate-800 dark:bg-slate-900/70">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
@@ -184,6 +211,16 @@ export default function App() {
 
             <DarkToggle />
 
+            <button
+              onClick={() => setA11yOpen(true)}
+              className="rounded-xl border border-slate-200/70 bg-white/70 px-3 py-2 text-sm text-slate-700 shadow-sm hover:bg-white/80 dark:border-slate-700/60 dark:bg-slate-800/60 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              aria-label="Accessibility settings"
+              title="Accessibility settings"
+            >
+              <Settings className="h-4 w-4 inline mr-1" />
+              Settings
+            </button>
+
             {/* Logout */}
             <button
               onClick={logout}
@@ -199,9 +236,16 @@ export default function App() {
         </div>
       </header>
 
+      <BreakPromptModal
+        open={showBreakPrompt && tab === "learn"}
+        onContinue={handleBreakDismiss}
+        onTakeBreak={handleBreakDismiss}
+      />
+
       {/* Main */}
       <main id="main-content" className="mx-auto max-w-6xl px-4 py-6" tabIndex={-1}>
-        {/* Hero */}
+        {/* Hero - hidden in Focus mode (ADHD) */}
+        {!focusMode && (
         <section
           aria-label="Intro"
           className="mb-6 rounded-2xl bg-gradient-to-r from-blue-50 to-teal-50 p-6 ring-1 ring-inset ring-slate-200 dark:from-slate-800/60 dark:to-slate-800/30 dark:ring-slate-700"
@@ -226,6 +270,7 @@ export default function App() {
             </div>
           </div>
         </section>
+        )}
 
         {/* Tabs */}
         <nav aria-label="Main navigation" className="mb-6 flex flex-wrap gap-2">
@@ -247,7 +292,7 @@ export default function App() {
         </nav>
 
         {/* Routed content */}
-        {tab === "learn" && <Learn t={t} lang={lang} role={authedRole} />}
+        {tab === "learn" && <Learn t={t} lang={lang} role={authedRole} onNavigateToSimulate={() => setTab("simulate")} onNavigateToProject={() => setTab("project")} />}
         {tab === "simulate" && <Simulate t={t} lang={lang} role={authedRole} />}
         {tab === "access" && <Access t={t} lang={lang} role={authedRole} />} {/* Assess */}
         {tab === "project" && <Project t={t} lang={lang} role={authedRole} />}
