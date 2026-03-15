@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import '@google/model-viewer'; /* WebAR: model-viewer web component for View in AR */
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';

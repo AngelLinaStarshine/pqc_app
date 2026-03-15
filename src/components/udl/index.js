@@ -8,3 +8,5 @@ export { SimpleExplanationHelper } from "./SimpleExplanationHelper";
 export { AccessibilitySettingsPanel } from "./AccessibilitySettingsPanel";
 export { SkipToContent } from "./SkipToContent";
 export { BreakPromptModal } from "./BreakPromptModal";
+export { AccessibleTranscript } from "./AccessibleTranscript";
+export { MicroExplainerReel } from "./MicroExplainerReel";
