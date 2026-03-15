@@ -44,6 +44,12 @@ export function AccessibilitySettingsPanel({ open, onClose }) {
       />
       <aside
         className="fixed right-0 top-0 z-50 h-full w-full max-w-sm bg-white shadow-xl dark:bg-slate-900"
+        style={{
+          paddingTop: "max(0.75rem, env(safe-area-inset-top))",
+          paddingRight: "max(0.75rem, env(safe-area-inset-right))",
+          paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))",
+          paddingLeft: "max(0.75rem, env(safe-area-inset-left))",
+        }}
         role="dialog"
         aria-modal="true"
         aria-labelledby="a11y-panel-title"

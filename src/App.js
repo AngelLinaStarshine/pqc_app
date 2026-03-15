@@ -169,17 +169,17 @@ export default function App() {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       <SkipToContent targetId="main-content" label="Skip to main content" />
       <AccessibilitySettingsPanel open={a11yOpen} onClose={() => setA11yOpen(false)} />
-      {/* Header */}
-      <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur dark:border-slate-800 dark:bg-slate-900/70">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="h-6 w-6 text-blue-600" />
-            <h1 className="text-lg font-semibold text-slate-800 dark:text-slate-100">
+      {/* Header — responsive for mobile */}
+      <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 dark:border-slate-800 dark:bg-slate-900/95 dark:supports-[backdrop-filter]:bg-slate-900/90">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-3 py-3 sm:px-4">
+          <div className="flex min-w-0 flex-1 items-center gap-2">
+            <ShieldCheck className="h-6 w-6 shrink-0 text-blue-600" />
+            <h1 className="truncate text-base font-semibold text-slate-800 dark:text-slate-100 sm:text-lg">
               {t.appTitle}
             </h1>
           </div>
-          <div className="flex items-center gap-2">
-            <Chip icon={Globe2}>{t.standards || "Standards"}</Chip>
+          <div className="flex flex-wrap items-center justify-end gap-1.5 sm:gap-2">
+            <Chip icon={Globe2} className="hidden sm:inline-flex">{t.standards || "Standards"}</Chip>
 
             {/* Role badge */}
             <span
@@ -243,7 +243,7 @@ export default function App() {
       />
 
       {/* Main */}
-      <main id="main-content" className="mx-auto max-w-6xl px-4 py-6" tabIndex={-1}>
+      <main id="main-content" className="mx-auto max-w-6xl px-3 py-6 sm:px-4" tabIndex={-1}>
         {/* Hero - hidden in Focus mode (ADHD) */}
         {!focusMode && (
         <section
@@ -272,13 +272,14 @@ export default function App() {
         </section>
         )}
 
-        {/* Tabs */}
-        <nav aria-label="Main navigation" className="mb-6 flex flex-wrap gap-2">
+        {/* Tabs — scrollable on mobile */}
+        <nav aria-label="Main navigation" className="mb-6 overflow-x-auto -mx-3 px-3 sm:mx-0 sm:px-0 sm:overflow-visible">
+          <div className="flex min-w-max flex-nowrap gap-2 py-1 sm:flex-wrap sm:min-w-0">
           {tabs.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
               onClick={() => setTab(id)}
-              className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm shadow-sm ring-1 ring-inset transition ${
+              className={`inline-flex min-h-[44px] items-center gap-2 rounded-full px-4 py-2 text-sm shadow-sm ring-1 ring-inset transition shrink-0 ${
                 tab === id
                   ? "bg-blue-600 text-white ring-blue-600"
                   : "bg-white text-slate-700 ring-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-800"
@@ -289,6 +290,7 @@ export default function App() {
               {label}
             </button>
           ))}
+          </div>
         </nav>
 
         {/* Routed content */}

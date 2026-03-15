@@ -103,7 +103,7 @@ function LearnAccordionCard({
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:hover:bg-slate-800/50"
+        className="flex min-h-[44px] w-full items-center justify-between gap-4 px-5 py-4 text-left hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:hover:bg-slate-800/50"
         aria-expanded={isOpen}
         aria-controls={`accordion-panel-${notesKey}`}
       >
@@ -584,7 +584,7 @@ export default function Learn({ t, lang, onNavigateToSimulate, onNavigateToProje
                 key={id}
                 type="button"
                 onClick={() => setOpenReelId(id)}
-                className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                className="inline-flex min-h-[44px] items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 shrink-0"
                 aria-label={`Watch: ${reelTitle}`}
               >
                 <Film className="h-4 w-4 text-blue-600 animate-pulse" aria-hidden />
@@ -636,8 +636,8 @@ export default function Learn({ t, lang, onNavigateToSimulate, onNavigateToProje
       />
 
       {openReelId && REELS_DATA[openReelId] && (
-        <div className="fixed inset-0 z-[65] flex items-center justify-center overflow-y-auto bg-black/50 p-4">
-          <div className="relative my-8 w-full max-w-lg">
+        <div className="fixed inset-0 z-[65] flex items-center justify-center overflow-y-auto bg-black/50 p-4" style={{ padding: "max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left))" }}>
+          <div className="relative my-8 w-full max-w-lg min-h-0 max-h-[min(90vh,100dvh)] flex flex-col">
             <MicroExplainerReel
               reelId={openReelId}
               data={REELS_DATA[openReelId]}

@@ -39,7 +39,13 @@ export function ARExperienceModal({ open, experience, lang = "en", onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-[70] flex flex-col bg-slate-900"
+      className="fixed inset-0 z-[70] flex flex-col bg-slate-900 safe-area-insets"
+      style={{
+        paddingTop: "env(safe-area-inset-top)",
+        paddingBottom: "env(safe-area-inset-bottom)",
+        paddingLeft: "env(safe-area-inset-left)",
+        paddingRight: "env(safe-area-inset-right)",
+      }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="ar-modal-title"
@@ -52,7 +58,7 @@ export function ARExperienceModal({ open, experience, lang = "en", onClose }) {
         </h2>
         <button
           onClick={onClose}
-          className="rounded-lg p-2 text-slate-300 hover:bg-slate-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center p-2 text-slate-300 hover:bg-slate-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           aria-label="Close AR experience"
         >
           <X className="h-5 w-5" />
